@@ -2,5 +2,5 @@
 public interface IBeobachtbar {
 	public void anmelden (IBeobachter beobachter);
 	public void abmelden (IBeobachter beobachter);
-	public int[][] gibZustand();
+	public Cell[][] gibZustand();
 }

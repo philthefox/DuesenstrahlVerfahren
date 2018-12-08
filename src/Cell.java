@@ -18,6 +18,7 @@ public class Cell {
 	public Cell(int ordinate_x, int ordinate_y) {
 		this.ordinate_x = ordinate_x;
 		this.ordinate_y = ordinate_y;
+		state = 1;
 		neighbors = new ArrayList<Cell>();
 	}
 	
@@ -31,6 +32,34 @@ public class Cell {
 	
 	public List<Cell> getAllNeighbors() {
 		return neighbors;
+	}
+	
+	public boolean isUpperNeighbor(Cell neighbor) {
+		if ((neighbor.equals(upperLeftNeighbor)) || (neighbor.equals(upperNeighbor)) || (neighbor.equals(upperRightNeighbor))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isRightNeighbor(Cell neighbor) {
+		if ((neighbor.equals(upperRightNeighbor)) || (neighbor.equals(rightNeighbor)) || (neighbor.equals(belowRightNeighbor))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isBelowNeighbor(Cell neighbor) {
+		if ((neighbor.equals(belowLeftNeighbor)) || (neighbor.equals(belowNeighbor)) || (neighbor.equals(belowRightNeighbor))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isLeftNeighbor(Cell neighbor) {
+		if ((neighbor.equals(upperLeftNeighbor)) || (neighbor.equals(leftNeighbor)) || (neighbor.equals(belowLeftNeighbor))) {
+			return true;
+		}
+		return false;
 	}
 	
 	public void addNeighbor(Cell neighbor, int neighbor_x, int neighbor_y) {

@@ -15,6 +15,8 @@ import java.util.Map;
  */
 public class Visualisierung extends JFrame implements IBeobachter
 {
+	int zaehler;
+	
     // Die Farbe für leere Positionen
     private static final Color LEER_FARBE = Color.white;
 
@@ -30,7 +32,7 @@ public class Visualisierung extends JFrame implements IBeobachter
     private Map<Class<?>, Color> farben;
     // Ein Statistik-Objekt zur Berechnung und Speicherung
     // von Simulationsdaten
-    private FeldStatistik stats;
+//    private FeldStatistik stats;
 
     /**
      * Erzeuge eine Ansicht mit der gegebenen Breite und Höhe.
@@ -39,7 +41,9 @@ public class Visualisierung extends JFrame implements IBeobachter
      */
     public Visualisierung(int hoehe, int breite)
     {
-        stats = new FeldStatistik();
+    	zaehler = 0;
+    	
+//        stats = new FeldStatistik();
         farben = new HashMap<>();
 
         setTitle("Simulation von Füchsen und Hasen");
@@ -88,31 +92,50 @@ public class Visualisierung extends JFrame implements IBeobachter
      * @param schritt  welcher Iterationsschritt ist dies?
      * @param feld     das Feld, das angezeigt werden soll
      */
-    public void zeigeStatus(int schritt, Feld feld)
+    public void zeigeStatus(int schritt, Cell[][] feld)
     {
         if(!isVisible())
             setVisible(true);
 
         schrittLabel.setText(SCHRITT_PREFIX + schritt);
-        stats.zuruecksetzen();
+//        stats.zuruecksetzen();
         
         feldansicht.zeichnenVorbereiten();
             
-        for(int zeile = 0; zeile < feld.gibTiefe(); zeile++) {
-            for(int spalte = 0; spalte < feld.gibBreite(); spalte++) {
-                Object tier = feld.gibObjektAn(zeile, spalte);
-                if(tier != null) {
-                    stats.erhoeheZaehler(tier.getClass());
-                    feldansicht.zeichneMarkierung(spalte, zeile, gibFarbe(tier.getClass()));
+        for(int zeile = 0; zeile < feld.length; zeile++) {
+            for(int spalte = 0; spalte < feld[0].length; spalte++) {
+//                Object tier = feld.gibObjektAn(zeile, spalte);
+            	int state = feld[zeile][spalte].getState();
+            	Color farbe = Color.WHITE;
+            	
+            	if (state < 5) {
+            		farbe = Color.BLUE;
+            	}
+            	else if (state < 10) {
+            		farbe = Color.CYAN;
+            	}
+            	else if (state < 15) {
+            		farbe = Color.GREEN;
+            	}
+            	else if (state < 20) {
+            		farbe = Color.ORANGE;
+            	}
+            	else if (state <= 10000) {
+            		farbe = Color.RED;
+            	}
+            	
+                if(feld[zeile][spalte].getState() > 1) {
+//                    stats.erhoeheZaehler(tier.getClass());
+                    feldansicht.zeichneMarkierung(spalte, zeile, farbe);
                 }
                 else {
                     feldansicht.zeichneMarkierung(spalte, zeile, LEER_FARBE);
                 }
             }
         }
-        stats.zaehlungBeendet();
+//        stats.zaehlungBeendet();
 
-        population.setText(POPULATION_PREFIX + stats.gibBewohnerInfo(feld));
+        population.setText(POPULATION_PREFIX); // + stats.gibBewohnerInfo(feld));
         feldansicht.repaint();
     }
 
@@ -120,9 +143,10 @@ public class Visualisierung extends JFrame implements IBeobachter
      * Entscheide, ob die Simulation weiterlaufen soll.
      * @return true  wenn noch mehr als eine Spezies lebendig ist
      */
-    public boolean istAktiv(Feld feld)
+    public boolean istAktiv()
     {
-        return stats.istAktiv(feld);
+        return true;
+//    	return stats.istAktiv(feld);
     }
     
     /**
@@ -130,7 +154,7 @@ public class Visualisierung extends JFrame implements IBeobachter
      */
     public void zuruecksetzen()
     {
-        stats.zuruecksetzen();
+//        stats.zuruecksetzen();
     }
     
     /**
@@ -228,7 +252,8 @@ public class Visualisierung extends JFrame implements IBeobachter
 
 	@Override
 	public void aktualisieren(IBeobachtbar beobachtbar) {
-		// TODO Auto-generated method stub
-		
+		Cell[][] cells = beobachtbar.gibZustand();
+		zeigeStatus(zaehler, cells);
+		zaehler++;
 	}
 }
